@@ -1,0 +1,3 @@
+######## ENC #########
+Threshold = 150;
+ADCRange = 750; 
