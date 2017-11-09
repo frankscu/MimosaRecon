@@ -32,11 +32,8 @@ void MGeo::Initialize(void){
 void MGeo::InitFromFile(){
 
   std::string geometryFilePath = "/Users/chenliejian/Documents/Code/MimosaDigitizer/Mimosa";
-  geometryFilePath += "/dat/Spt.txt";
+  geometryFilePath += "/model/Spt.txt";
   std::ifstream fin(geometryFilePath.c_str());
-
-//  string filename="/afs/.ihep.ac.cn/bes3/offline/Boss/mdcu/SuperBoss/1.0.3/Simulation/BOOST/MimosaSim/MimosaSim-00-01-00//dat/Mimosa.txt";
-//  ifstream fin(filename.c_str(),ios::in);
 
   if(!fin.good()){
     cout<<"Error::spt parameters file not exist"<<endl;
@@ -44,7 +41,7 @@ void MGeo::InitFromFile(){
   }
 
   int rowNo, colNo;
-  double chipL,chipW,asicTh,sensorTh,substrTh,pitchR,pitchC;
+  double chipL,chipW,asicTh,sensorTh,substrTh,pitchR,pitchC,diodeOffsetX,diodeOffsetY;
   int ladderNo,chipNo;
   double ssL,ssW,epoxyT,kptT,mfT,cfT,_R,_Phi,_PhaseAngle;
   double segInnR,segOutR,segL,segZ;
@@ -64,7 +61,7 @@ void MGeo::InitFromFile(){
   fin.seekg(1,ios::cur);
   std::getline(fin, line);
 
-  fin>>chipL>>chipW>>asicTh>>sensorTh>>substrTh>>pitchR>>pitchC>>rowNo>>colNo;
+  fin>>chipL>>chipW>>asicTh>>sensorTh>>substrTh>>pitchR>>pitchC>>diodeOffsetX>>diodeOffsetY>>rowNo>>colNo;
   cout<<"L: "<<chipL<<" W: "<<chipW<<" asTh: "<<asicTh<<" senTh: "<<sensorTh<<" subTh: "<<substrTh<<" pitchR: "<<pitchR<<" pitchC: "<<pitchC<<" rowNo: "<<rowNo<<" colNo: "<<colNo<<endl;
 
   fin.seekg(1,ios::cur);
