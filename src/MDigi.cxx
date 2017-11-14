@@ -24,4 +24,11 @@ bool MDigi::IsAdjacentTo(MDigi* digi){
 	}
 }
 
-
+bool MDigi::IsAboveTHR(double threshold){
+	if(m_adc>threshold){
+		return true;
+	}
+	else{
+		return false;
+	}
+}

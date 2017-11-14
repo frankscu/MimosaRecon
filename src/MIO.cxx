@@ -4,8 +4,8 @@
 MIO * MIO::m_io=NULL;
 
 MIO* MIO::Instance(){
-    if (! m_io) m_io = new MIO();
-      return m_io;
+  if (! m_io) m_io = new MIO();
+  return m_io;
 }
 
 void MIO::OpenInputFile(string filein){
@@ -30,7 +30,7 @@ int MIO::ReadEvent(MEvent* evt){
       return -1;
     }
 
-    
+
     if(line.find("EventId") != std::string::npos){
       //cout<<line<<endl;
       string valStr=line.substr(line.find_last_of(" ")+1);
@@ -61,7 +61,7 @@ int MIO::ReadEvent(MEvent* evt){
       for(int j=0;j<m_nDigi;j++){
         (*m_fin)>>trackId>>chipId>>rowId>>colId>>ADC>>TDC;
         m_fin->seekg(1,ios::cur);
-        //cout<<rowId<<" "<<colId<<" "<<ADC<<endl; 
+        //cout<<rowId<<" "<<colId<<" "<<ADC<<endl;
         evt->AddDigi(trackId,chipId,rowId,colId,ADC,TDC);
       }
       break;
@@ -93,7 +93,7 @@ int MIO::WriteEvent(MEvent* evt){
     Hep3Vector pos = _hit->GetPos();
     MHit* _trHit = _hit->GetTruth(0);
     Hep3Vector trpos = _trHit->GetPos();
-    
+
     (*m_fout)<<m_evtId<<"\t\t"<<_hit->GetId()<<"\t"<<_hit->GetChipId()<<"\t"<<pos.x()<<"\t"<<pos.y()<<"\t"<<int(_hit->GetADC())<<"\t"<<_hit->GetNofDigi()<<"\t"<<trpos.x()<<"\t"<<trpos.y()<<"\t"<<_trHit->GetADC()<<"\t"<<_trHit->GetNofDigi()<<endl;
   }
 }

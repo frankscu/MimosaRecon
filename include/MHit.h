@@ -52,6 +52,7 @@ class MHit{
 
     void SetTrackId(int track){m_trackId=track;};
     int GetTrackId() const {return m_trackId;};
+    
     double GetEnterAngle() const{return m_enterAngle;};
   private:
     int m_id;

@@ -1,22 +1,27 @@
-#ifndef MDigi_H
-#define MDigi_H
+#ifndef MCluster_H
+#define MCluster_H
 
+#include "MDigi.h"
 #include "MHit.h"
 #include "MGeo.h"
 
+class MDigi;
 class MHit;
-class MDigi
+class MCluster
 {
 public:
-	MDigi(void){};
-	MDigi(int trackId,int chipId,int rowId,int colId,double ADC, double TDC);
-  ~MDigi(void);
+	MCluster(void){};
+  MCluster(MDigi* m_digi);
+	MCluster(int trackId,int chipId,int rowId,int colId,double ADC, double TDC);
+  ~MCluster(void);
 
 	inline int GetColId();
 	inline int GetRowId();
 	inline int Overflow();
 	inline int Frame();
 	inline int GetId();
+  void SetId(int id) {m_id=id;};
+  
   int GetGlobalChipId() const{return m_globalChipId;};
   int GetTrackId() const{return m_trackId;};
 
@@ -35,9 +40,7 @@ public:
 	inline bool IsInHit();
 	inline void IsInHit(bool isInHit);
 
-	bool IsAdjacentTo(MDigi* digi);
-
-  bool IsAboveTHR(double threshold);
+	bool IsAdjacentTo(MCluster* digi);
 
 private:
 	int m_colId;
@@ -53,39 +56,39 @@ private:
 	MHit *m_hit;
 };
 
-inline int MDigi::GetColId(){
+inline int MCluster::GetColId(){
 	return m_colId;
 }
 
-inline int MDigi::GetRowId(){
+inline int MCluster::GetRowId(){
 	return m_rowId;
 }
 
-inline int MDigi::Overflow(){
+inline int MCluster::Overflow(){
 	return m_overflow;
 }
 
-inline int MDigi::Frame(){
+inline int MCluster::Frame(){
 	return m_frame;
 }
 
-inline int MDigi::GetId(){
+inline int MCluster::GetId(){
 	return m_id;
 }
 
-inline MHit* MDigi::Hit(){
+inline MHit* MCluster::Hit(){
 	return m_hit;
 }
 
-inline void MDigi::Hit(MHit* hit){
+inline void MCluster::Hit(MHit* hit){
 	m_hit=hit;
 }
 
-inline void  MDigi::IsInHit(bool isInHit){
+inline void  MCluster::IsInHit(bool isInHit){
 	m_IsInHit=isInHit;
 }
 
-inline bool  MDigi::IsInHit(){
+inline bool  MCluster::IsInHit(){
 	return m_IsInHit;
 }
 

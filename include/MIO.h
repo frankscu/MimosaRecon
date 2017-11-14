@@ -1,5 +1,5 @@
 #ifndef MIO_H
-#define MIO_H 
+#define MIO_H
 
 #include <iostream>
 #include <fstream>
@@ -31,7 +31,7 @@ class MIO{
     static MIO* Instance();
 
   private:
-  
+
     fstream* m_fin;
     fstream* m_fout;
 

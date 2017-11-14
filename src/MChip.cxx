@@ -5,7 +5,6 @@ MChip::MChip(int id):m_id(id)
 {
 }
 
-
 MChip::~MChip(void)
 {
 	for(m_itDigi=m_digiVec.begin();m_itDigi!=m_digiVec.end();++m_itDigi){
@@ -33,6 +32,7 @@ void MChip::Print(){
   */
 
 }
+
 
 int MChip::FindHit(vector<MHit*> &hitVec){
 

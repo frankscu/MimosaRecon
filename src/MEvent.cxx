@@ -1,6 +1,7 @@
 #include "MEvent.h"
 
 
+
 MEvent::MEvent(int nChip)
 {
   for(int i=0;i<nChip;i++){
@@ -30,6 +31,8 @@ void MEvent::Reset(){
 	}
 	m_trHitVec.clear();
 
+  m_digiVec.clear();
+
 	for(m_itChip=m_chipVec.begin();m_itChip!=m_chipVec.end();++m_itChip){
 		(*m_itChip)->Reset();
 	}
@@ -42,6 +45,7 @@ void MEvent::Reconstruct(){
 	for(m_itChip=m_chipVec.begin();m_itChip!=m_chipVec.end();++m_itChip){
 		(*m_itChip)->FindHit(m_hitVec);						
 	}
+  
   for(m_itHit=m_hitVec.begin();m_itHit!=m_hitVec.end();++m_itHit){
     (*m_itHit)->Reconstruct();
     for(m_itTrHit=m_trHitVec.begin();m_itTrHit!=m_trHitVec.end();++m_itTrHit){
@@ -84,6 +88,7 @@ void MEvent::AddTruth(int trackId,int chipId,double edep,double time,double posX
 
 void MEvent::AddDigi(int trackId,int chipId,int rowId,int colId,double ADC,double TDC){
   MDigi* _digi = new MDigi(trackId,chipId,rowId,colId,ADC,TDC);
+  m_digiVec.push_back(_digi);
   (m_chipVec[chipId])->AddDigi(_digi);
 	for(m_itTrHit=m_trHitVec.begin();m_itTrHit!=m_trHitVec.end();++m_itTrHit){
 		if((*m_itTrHit)->GetTrackId()==trackId) (*m_itTrHit)->AddDigi(_digi);

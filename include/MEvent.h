@@ -6,10 +6,12 @@
 #include <map>
 
 #include "MChip.h"
+#include "MCluster.h"
 #include "MHit.h"
 
 class MChip;
 class MHit;
+class MDigi;
 class MEvent{
 public:
 	MEvent(int nChip);
@@ -27,6 +29,9 @@ public:
 
 	int NofTruth(){return m_trHitVec.size();}
   MHit* GetTruthHit(int i) const {return m_trHitVec[i];};
+
+	int NofDigi(){return m_digiVec.size();}
+  MDigi* GetDigi(int i) const {return m_digiVec[i];};
 
 	int NofChip(){return m_chipVec.size();}
   MChip* GetChip(int i) const {return m_chipVec[i];};
@@ -48,6 +53,9 @@ private:
 
 	vector<MChip*> m_chipVec;	
 	vector<MChip*>::iterator m_itChip;	
+
+	vector<MDigi*> m_digiVec;	
+	vector<MDigi*>::iterator m_itDigi;	
 
 	int m_id;
 };

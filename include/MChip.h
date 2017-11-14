@@ -6,9 +6,11 @@
 #include <map>
 
 #include "MDigi.h"
+#include "MCluster.h"
 #include "MHit.h"
 
 class MDigi;
+class MCluster;
 class MHit;
 class MChip
 {
@@ -37,6 +39,9 @@ private:
 
 	vector<MDigi*> m_tempDigiVec;	
 	vector<MDigi*>::iterator m_tempItDigi;	
+
+	vector<MCluster*> m_clusterVec;	
+	vector<MCluster*>::iterator m_itCluster;	
 
 	int m_id;
 };
