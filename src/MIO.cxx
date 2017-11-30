@@ -18,8 +18,7 @@ void MIO::OpenInputFile(string filein){
 
 int MIO::ReadEvent(MEvent* evt){
 
-  bool _isGood=true;
-  string line;
+  std::string line;
 
   int trackId,chipId,rowId,colId;
   double edep,time,posX,posY,posZ,enterAngle,ADC,TDC;
@@ -33,14 +32,14 @@ int MIO::ReadEvent(MEvent* evt){
 
     if(line.find("EventId") != std::string::npos){
       //cout<<line<<endl;
-      string valStr=line.substr(line.find_last_of(" ")+1);
+      std::string valStr=line.substr(line.find_last_of(" ")+1);
       m_evtId=atoi(valStr.c_str());
       //cout<<"EventId: "<<m_evtId<<endl;
     }
 
     if(line.find("McTruth") != std::string::npos){
       //cout<<line<<endl;
-      string valStr=line.substr(line.find_last_of(" ")+1);
+      std::string valStr=line.substr(line.find_last_of(" ")+1);
       //cout<<"TruthNo: "<<valStr<<endl;
       m_nTruth=atoi(valStr.c_str());
 
@@ -96,6 +95,99 @@ int MIO::WriteEvent(MEvent* evt){
 
     (*m_fout)<<m_evtId<<"\t\t"<<_hit->GetId()<<"\t"<<_hit->GetChipId()<<"\t"<<pos.x()<<"\t"<<pos.y()<<"\t"<<int(_hit->GetADC())<<"\t"<<_hit->GetNofDigi()<<"\t"<<trpos.x()<<"\t"<<trpos.y()<<"\t"<<_trHit->GetADC()<<"\t"<<_trHit->GetNofDigi()<<endl;
   }
+  return 0;
 }
 
+void MIO::OpenBinaryFile(string fileout){
+  m_bfout = new fstream(fileout.c_str(),ios::out | ios::binary);
+  if(!m_bfout){
+    cout<<""<<endl;
+    cout<<"Error::"<<fileout<<" can NOT be opened!!!"<<endl;
+  }
+  time_t t=time(0);
+  char tmp[64];
+  strftime(tmp, sizeof(tmp), "**********%Y%m%d%H%M%S**********", localtime(&t));
+  (*m_bfout)<<tmp<<"\r\n";
+}
 
+void MIO::WriteEmptyBinary(MEvent* evt){
+  string EventHeader = "\xAA\xAA\xAA\xAA";
+  string EventTrailer = "\xF0\xF0\xF0\xF0";
+  string RowHeaderFirst = "\x57\x53";
+  string RowTrilerFirst = "\x97\x98";
+
+  // Row Head:  0x07F4
+  string RowHeaderSecondA[16]={"\x07","\x17","\x27","\x37","\x47","\x57","\x67","\x77","\x87","\x97","\xA7","\xB7","\xC7","\xD7","\xE7","\xF7"};
+  string RowHeaderSecondB[3]={"\xF4","\xF5","\xF6"};
+
+  // Row Head:  0xE407
+  string RowTrilerSecondA[3]={"\xE4","\xE5","\xE6"};
+  string RowTrilerSecondB[16]={"\x07","\x17","\x27","\x37","\x47","\x57","\x67","\x77","\x87","\x97","\xA7","\xB7","\xC7","\xD7","\xE7","\xF7"};
+
+  (*m_bfout)<<EventHeader;
+
+  for(int row=0; row<48; row++){
+    (*m_bfout)<<RowHeaderFirst<<std::hex<<RowHeaderSecondA[row%16]<<std::hex<<RowHeaderSecondB[int(row/16)];
+    for(int col=0; col<16; col++){
+      (*m_bfout)<<std::hex<<std::setfill('\x00')<<std::setw(2)<<'\x00';
+    }
+    (*m_bfout)<<RowTrilerFirst<<std::hex<<RowTrilerSecondA[int(row/16)]<<std::hex<<RowTrilerSecondB[row%16];
+  }
+  (*m_bfout)<<EventTrailer;
+}
+
+void MIO::WriteBinary(MEvent* evt){
+  string EventHeader = "\xAA\xAA\xAA\xAA";
+  string EventTrailer = "\xF0\xF0\xF0\xF0";
+  string RowHeaderFirst = "\x57\x53";
+  string RowTrilerFirst = "\x97\x98";
+
+  // Row Head:  0x07F4
+  string RowHeaderSecondA[16]={"\x07","\x17","\x27","\x37","\x47","\x57","\x67","\x77","\x87","\x97","\xA7","\xB7","\xC7","\xD7","\xE7","\xF7"};
+  string RowHeaderSecondB[3]={"\xF4","\xF5","\xF6"};
+
+  // Row Head:  0xE407
+  string RowTrilerSecondA[3]={"\xE4","\xE5","\xE6"};
+  string RowTrilerSecondB[16]={"\x07","\x17","\x27","\x37","\x47","\x57","\x67","\x77","\x87","\x97","\xA7","\xB7","\xC7","\xD7","\xE7","\xF7"};
+
+  (*m_bfout)<<EventHeader;
+
+  int nDigi=evt->NofDigi();
+  for(int row=0; row<48; row++){
+    (*m_bfout)<<RowHeaderFirst<<std::hex<<RowHeaderSecondA[row%16]<<std::hex<<RowHeaderSecondB[int(row/16)];
+    int counts1=0;
+    int counts2=0;
+    for(int col=0; col<16; col++){
+      bool IsThereData=false;
+      for(int iDigi=0;iDigi<nDigi;iDigi++){
+        MDigi* _digi = evt->GetDigi(iDigi);
+        int rowId = _digi->GetRowId();
+        int colId = _digi->GetColId();
+        int adc = _digi->GetADC();
+        if(rowId==row && colId==col){
+          //cout << "rowId: "<<rowId<<"  colId:  "<<colId<<"  adc: "<<std::setfill('0')<<std::setw(2)<<std::hex<<adc<< endl;
+          std::stringstream ssA, ssB;
+          ssA << std::hex<<setfill('0')<<setw(1)<<int(adc/16);
+          ssB << std::hex<<setfill('0')<<setw(1)<<int(adc%16);
+          string adcstr = "\\x" + ssA.str() + ssB.str();
+          //string adcstrA = "\\x" + ssA.str();
+          //string adcstrB = "\\x" + ssB.str();
+          std::cout << "ADC string:  " << adcstr<< std::endl;
+          (*m_bfout) <<adcstr;
+          IsThereData=true;
+          counts1++;
+        }
+      }
+
+      if(IsThereData==false){
+        (*m_bfout)<<std::hex<<std::setfill('\x00')<<std::setw(2)<<'\x00';
+        counts2++;
+      }
+    }
+    std::cout << "Counts1: " << counts1 << std::endl;
+    std::cout << "Counts2: " << counts2 << std::endl;
+    (*m_bfout)<<RowTrilerFirst<<std::hex<<RowTrilerSecondA[int(row/16)]<<std::hex<<RowTrilerSecondB[row%16];
+  }
+  (*m_bfout)<<EventTrailer;
+
+}

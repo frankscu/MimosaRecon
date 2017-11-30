@@ -3,11 +3,14 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
+#include <iomanip>
 #include <algorithm>
 #include <vector>
 #include "MEvent.h"
 #include "MHit.h"
+#include <cstdio>
 
 
 using namespace std;
@@ -25,8 +28,12 @@ class MIO{
     int ReadEvent(MEvent* evt);
 
     void OpenOutputFile(string fileout);
+    void OpenBinaryFile(string fileout);
     void CloseOutputFile(){m_fout->close();};
+    void CloseBinaryFile(){m_bfout->close();};
     int WriteEvent(MEvent* evt);
+    void WriteEmptyBinary(MEvent* evt);
+    void WriteBinary(MEvent* evt);
 
     static MIO* Instance();
 
@@ -34,6 +41,7 @@ class MIO{
 
     fstream* m_fin;
     fstream* m_fout;
+    fstream* m_bfout; 
 
     int m_evtId;
     int m_nTruth;

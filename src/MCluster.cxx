@@ -2,8 +2,6 @@
 #include <cmath>
 
 MCluster::MCluster(MDigi* m_digi){
-  MGeo* _mGeo = MGeo::GetGeo();
-  
   m_trackId = m_digi->GetTrackId();
   m_globalChipId = m_digi->GetGlobalChipId();
   m_rowId = m_digi->GetRowId();

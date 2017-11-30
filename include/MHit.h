@@ -55,16 +55,16 @@ class MHit{
     
     double GetEnterAngle() const{return m_enterAngle;};
   private:
-    int m_id;
+    int m_trackId;
     int m_chipId;
+    double m_edep;
+    double m_time;
+    Hep3Vector m_pos;
+    int m_id;
     vector<MDigi*> m_digiVec;
     vector<MHit*> m_trHitVec;
     //MHit* m_trHit;
-    Hep3Vector m_pos;
-    double m_edep;
-    double m_time;
     double m_enterAngle;
-    int m_trackId;
 };
 
 /*

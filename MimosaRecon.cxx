@@ -19,71 +19,151 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-  time_t startSup,endSup;
-  time(&startSup);
-
-
-  MSuppress* mimosaSup = MSuppress::Instance();
-  mimosaSup->OpenInputFile("../../Mimosa/work/Mimosa.rawdat");
-  mimosaSup->OpenOutputFile("./data/Mimosa.supdat");
-  mimosaSup->SetTHR(50);
-
-  int nChipSup=1;
-  MEvent* evtSup = new MEvent(nChipSup);
-
-  int nEvtSup=0;
-  while(mimosaSup->ReadEvent(evtSup)>-1){
-
-    mimosaSup->WriteEvent(evtSup);
-
-    nEvtSup++;
-    if(nEvtSup%1000==0) cout<<nEvtSup<<" events are processed!"<<endl;
-
-    evtSup->Reset();
+  if(argc < 4) {
+    cerr << "Usage: \n"
+         << "   MimosaRecon -s: Suppress \n" 
+         << "   MimosaRecon -r: Reconstruct" << endl;
+    return -1;
   }
 
-  delete evtSup;
-  delete mimosaSup;
+  if(strcmp(argv[1],"-s")==0){
 
-  time(&endSup);
+    time_t startSup,endSup;
+    time(&startSup);
 
-  double tSup = difftime(endSup,startSup);
-  cout<<"*****************************************************************"<<endl;
-  cout<<"Time Cost: "<<tSup<<endl;
-  cout<<"Total Event: "<<nEvtSup<<"! \t Event Rate: "<<nEvtSup/tSup<<"!"<<endl;
+    string infile = argv[2];
+    string outfile = argv[3];
 
-  time_t start,end;
-  time(&start);
-  MIO* mimosaIO = MIO::Instance();
-  mimosaIO->OpenInputFile("./data/Mimosa.supdat");
-  mimosaIO->OpenOutputFile("./data/Mimosa.recdat");
+    MSuppress* mimosaSup = MSuppress::Instance();
+    //mimosaSup->OpenInputFile("../../Mimosa/work/Mimosa.rawdat");
+    //mimosaSup->OpenOutputFile("./data/Mimosa.supdat");
+    mimosaSup->OpenInputFile(infile);
+    mimosaSup->OpenOutputFile(outfile);
 
-  int nChip=1;
-  MEvent* evt = new MEvent(nChip);
+    double thr=0;
+    if(argc==6){
+      if (strcmp(argv[4],"-THR")==0){
+        thr=atof(argv[5]);
+        mimosaSup->SetTHR(thr);
+      }else{
+        mimosaSup->SetTHR(thr);
+      }
+    }else{
+      mimosaSup->SetTHR(50);
+    }
 
-  int nEvt=0;
-  while(mimosaIO->ReadEvent(evt)>-1){
+    int nChipSup=1;
+    MEvent* evtSup = new MEvent(nChipSup);
 
-    evt->Reconstruct();
-    mimosaIO->WriteEvent(evt);
+    int nEvtSup=0;
+    while(mimosaSup->ReadEvent(evtSup)>-1){
 
-    nEvt++;
-    if(nEvt%1000==0) cout<<nEvt<<" events are processed!"<<endl;
+      mimosaSup->WriteEvent(evtSup);
 
-    evt->Reset();
+      nEvtSup++;
+      if(nEvtSup%1000==0) cout<<nEvtSup<<" events are processed!"<<endl;
+
+      evtSup->Reset();
+    }
+
+    delete evtSup;
+    delete mimosaSup;
+
+    time(&endSup);
+
+    double tSup = difftime(endSup,startSup);
+    cout<<"*****************************************************************"<<endl;
+    cout<<"Time Cost: "<<tSup<<endl;
+    cout<<"Total Event: "<<nEvtSup<<"! \t Event Rate: "<<nEvtSup/tSup<<"!"<<endl;
+
+  }else if(strcmp(argv[1],"-r")==0){
+
+    time_t start,end;
+    time(&start);
+
+    string infile = argv[2];
+    string outfile = argv[3];
+
+    MIO* mimosaIO = MIO::Instance();
+
+    //mimosaIO->OpenInputFile("../../Mimosa/work/Mimosa.rawdat");
+    //mimosaIO->OpenInputFile("./data/Mimosa.supdat");
+    //mimosaIO->OpenOutputFile("./data/Mimosa.recdat");
+    mimosaIO->OpenInputFile(infile);
+    mimosaIO->OpenOutputFile(outfile);
+
+    if(argc>4) {
+      cerr << "Usage: " << endl;
+      return -1;
+    }
+
+    int nChip=1;
+    MEvent* evt = new MEvent(nChip);
+
+    int nEvt=0;
+    while(mimosaIO->ReadEvent(evt)>-1){
+
+      evt->Reconstruct();
+      mimosaIO->WriteEvent(evt);
+
+      nEvt++;
+      if(nEvt%1000==0) cout<<nEvt<<" events are processed!"<<endl;
+
+      evt->Reset();
+    }
+
+    delete evt;
+    delete mimosaIO;
+
+    time(&end);
+    double t = difftime(end,start);
+    cout<<"*****************************************************************"<<endl;
+    cout<<"Time Cost: "<<t<<endl;
+    cout<<"Total Event: "<<nEvt<<"! \t Event Rate: "<<nEvt/t<<"!"<<endl;
+
+
+    //getchar();
+  }else if(strcmp(argv[1],"-b")==0){
+    time_t start,end;
+    time(&start);
+
+    string infile = argv[2];
+    string outfile = argv[3];
+
+    MIO* mimosaIO = MIO::Instance();
+
+    mimosaIO->OpenInputFile(infile);
+    mimosaIO->OpenBinaryFile(outfile);
+
+    if(argc>4) {
+      cerr << "Usage: " << endl;
+      return -1;
+    }
+
+    int nChip=1;
+    MEvent* evt = new MEvent(nChip);
+
+    int nEvt=0;
+    while(mimosaIO->ReadEvent(evt)>-1){
+
+      //mimosaIO->WriteEmptyBinary(evt);
+      mimosaIO->WriteBinary(evt);
+
+      nEvt++;
+      if(nEvt%1000==0) cout<<nEvt<<" events are processed!"<<endl;
+
+      evt->Reset();
+    }
+
+    delete evt;
+    delete mimosaIO;
+
+    time(&end);
+    double t = difftime(end,start);
+    cout<<"*****************************************************************"<<endl;
+    cout<<"Time Cost: "<<t<<endl;
+    cout<<"Total Event: "<<nEvt<<"! \t Event Rate: "<<nEvt/t<<"!"<<endl;
+
   }
-
-  delete evt;
-  delete mimosaIO;
-
-  time(&end);
-  double t = difftime(end,start);
-  cout<<"*****************************************************************"<<endl;
-  cout<<"Time Cost: "<<t<<endl;
-  cout<<"Total Event: "<<nEvt<<"! \t Event Rate: "<<nEvt/t<<"!"<<endl;
-
-
-  //getchar();
   return 0;
-
 }

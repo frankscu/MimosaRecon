@@ -40,10 +40,10 @@ public:
   bool IsAboveTHR(double threshold);
 
 private:
-	int m_colId;
-	int m_rowId;
-	int m_globalChipId;
   int m_trackId;
+	int m_globalChipId;
+	int m_rowId;
+	int m_colId;
 	int m_overflow;
 	int m_frame;
 	int m_id;

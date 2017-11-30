@@ -16,7 +16,7 @@ void chargeDistribution(){
   double posX,posY,hitADC,trPosX,trPosY,edep;
   int nlines;
   double THR=0;
-  double pedestal=0;
+  double pedestal=4000;
   double distance[20044],hADC[20044];
   fstream fin("/Users/chenliejian/Documents/Code/MimosaDigitizer/AnaMimosa/MimosaRecon/data/Mimosa.recdat",ios::in);
   std::getline(fin,line);

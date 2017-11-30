@@ -29,7 +29,6 @@ void MSuppress::OpenOutputFile(string fileout){
 
 int MSuppress::ReadEvent(MEvent* evt){
 
-  bool _isGood=true;
   string line;
 
   int trackId,chipId,rowId,colId;
