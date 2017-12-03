@@ -166,14 +166,16 @@ void MIO::WriteBinary(MEvent* evt){
         int adc = _digi->GetADC();
         if(rowId==row && colId==col){
           //cout << "rowId: "<<rowId<<"  colId:  "<<colId<<"  adc: "<<std::setfill('0')<<std::setw(2)<<std::hex<<adc<< endl;
-          std::stringstream ssA, ssB;
-          ssA << std::hex<<setfill('0')<<setw(1)<<int(adc/16);
-          ssB << std::hex<<setfill('0')<<setw(1)<<int(adc%16);
-          string adcstr = "\\x" + ssA.str() + ssB.str();
+          //std::stringstream ssA, ssB;
+          //ssA << std::hex<<setfill('0')<<setw(1)<<int(adc/16);
+          //ssB << std::hex<<setfill('0')<<setw(1)<<int(adc%16);
+          //string adcstr = ssA.str() + ssB.str();
           //string adcstrA = "\\x" + ssA.str();
           //string adcstrB = "\\x" + ssB.str();
-          std::cout << "ADC string:  " << adcstr<< std::endl;
-          (*m_bfout) <<adcstr;
+          //std::cout << "ADC string:  " << adcstr<< std::endl;
+          //std::cout << "ADC Hex string:  " << std::hex << adcstr<< std::endl;
+          //(*m_bfout) <<std::hex<<adcstr;
+          (*m_bfout) << std::setfill('\x00')<<std::setw(2)<<Byte(adc);
           IsThereData=true;
           counts1++;
         }
@@ -184,8 +186,8 @@ void MIO::WriteBinary(MEvent* evt){
         counts2++;
       }
     }
-    std::cout << "Counts1: " << counts1 << std::endl;
-    std::cout << "Counts2: " << counts2 << std::endl;
+    // std::cout << "Counts1: " << counts1 << std::endl;
+    // std::cout << "Counts2: " << counts2 << std::endl;
     (*m_bfout)<<RowTrilerFirst<<std::hex<<RowTrilerSecondA[int(row/16)]<<std::hex<<RowTrilerSecondB[row%16];
   }
   (*m_bfout)<<EventTrailer;

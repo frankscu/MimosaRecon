@@ -12,8 +12,8 @@
 #include "MHit.h"
 #include <cstdio>
 
-
 using namespace std;
+typedef unsigned char Byte;
 
 class MIO{
   public:
