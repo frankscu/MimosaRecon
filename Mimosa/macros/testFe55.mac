@@ -1,0 +1,34 @@
+/control/verbose 0
+/tracking/verbose 0
+/event/verbose 0
+/gps/verbose 2
+
+/gps/particle gamma  
+ 
+/gps/pos/type Plane	#点源
+/gps/pos/shape Circle
+/gps/pos/radius 5. mm
+/gps/pos/centre 0 0 22 cm 
+/gps/direction 0 0 -1
+/gps/ene/type User
+/gps/hist/type energy
+
+# spectra
+/gps/hist/point  0.00588  8.2   	
+/gps/hist/point  0.00589  16.20   	
+/gps/hist/point  0.00649  1.89 	
+
+/gps/ang/type iso 		#各向同性
+#/gps/ang/rot1 1 0 0     #旋转矩阵
+#/gps/ang/rot2 0 0 -1
+
+/gps/ang/mintheta  0
+/gps/ang/maxtheta  1.8
+/gps/ang/minphi  0
+/gps/ang/maxphi  360. deg 
+
+/gps/source/list
+
+/Mimosa/event/setPrintModulo 1
+/run/beamOn 10
+

@@ -1,0 +1,17 @@
+# Macro file for example Mimosa
+# 
+# To be run preferably in batch, without graphics:
+# % exampleMimosa[a,b,c,d] run2.mac
+#
+# Default kinemtics: 
+# electron 50 MeV in direction (0.,0.,1.)
+# 1000 events
+#
+/Mimosa/event/setPrintModulo 5
+
+#/beam/particle gamma
+#/beam/energy 10 keV
+
+
+/run/beamOn 10
+
